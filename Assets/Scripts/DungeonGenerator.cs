@@ -23,10 +23,10 @@ public class DungeonGenerator : MonoBehaviour
         public DungeonRoom leftConnection = null;
         public DungeonRoom rightConnection = null;
 
-        public DungeonRoom(Vector2 position, Transform rootTransform)
+        public DungeonRoom(Vector2 position, Transform rootTransform, GameObject prefab)
         {
             this.position = position;
-            gameObject = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), position, Quaternion.identity, rootTransform);
+            gameObject = Instantiate(prefab, position, Quaternion.identity, rootTransform);
         }
 
         public void makeConnections(DungeonRoom room)
@@ -66,10 +66,11 @@ public class DungeonGenerator : MonoBehaviour
     public int generationRounds;
     public DungeonRoom[] rooms = new DungeonRoom[100];
     public DungeonGraphNode rootDungeonNode = new DungeonGraphNode();
+    public GameObject[] roomPrefabs = new GameObject[100];
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rooms[0] = new DungeonRoom(new Vector2(0, 0), transform);
+        rooms[0] = new DungeonRoom(new Vector2(0, 0), transform, roomPrefabs[Random.Range(0, roomPrefabs.Count())]);
         for (int y = 0; y < generationRounds; y++)
         {
             bool firstGen = true;
@@ -96,7 +97,7 @@ public class DungeonGenerator : MonoBehaviour
                 }
 
 
-                DungeonRoom newRoom = new DungeonRoom(currentRoom.position + position, transform);
+                DungeonRoom newRoom = new DungeonRoom(currentRoom.position + position, transform, roomPrefabs[Random.Range(0, roomPrefabs.Count())]);
                 rooms[i + 1] = newRoom;
                 setConnection(currentRoom, newRoom, position);
                 for (int j = 0; j < rooms.Length; j++)
