@@ -1,16 +1,73 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class DungeonGenerator : MonoBehaviour
 {
     public class DungeonGraphNode
     {
+        private DungeonGraphNode parent = null;
         private DungeonGraphNode[] children = new DungeonGraphNode[5];
-        private string roomType;
+        private int[] depthList = new int[5];
+        private DungeonRoom room;
+
+        public DungeonRoom getRoom() { return room; }
+
+        public DungeonGraphNode(DungeonRoom room)
+        {
+            this.room = room;
+        }
 
         public void appendChild(DungeonGraphNode node)
         {
-            children.Append(node);
+            node.parent = this;
+            for (int i = 0; i < children.Length; i++) {
+                if (children[i] == null)
+                {
+                    children[i] = node;
+                    break;
+                }
+            }
+        }
+
+        public bool hasChildren()
+        {
+            return children.Count() > 0;
+        }
+
+        public bool hasChild(DungeonGraphNode node)
+        {
+            return children.Contains(node);
+        }
+
+        public DungeonGraphNode findDeepestNode()
+        {
+            if (this.hasChildren()) {
+                int maxDepth = 0;
+                DungeonGraphNode deepestNode = null;
+                for (int i = 0; i < children.Length; i++) {
+                    if (children[i] == null) continue;
+                    if (children[i].findDepth() > maxDepth) {
+                        maxDepth = children[i].findDepth();
+                        deepestNode = children[i];
+                    }
+                }
+                return deepestNode.findDeepestNode();
+            } else
+            {
+                return this;
+            }
+        }
+
+        public int findDepth(int depth = 0)
+        {
+            if(this.parent != null)
+            {
+                return this.parent.findDepth(depth) + 1;
+            } else
+            {
+                return depth;
+            }
         }
     }
 
@@ -22,31 +79,48 @@ public class DungeonGenerator : MonoBehaviour
         public DungeonRoom downConnection = null;
         public DungeonRoom leftConnection = null;
         public DungeonRoom rightConnection = null;
+        public DungeonGraphNode node;
+        public RoomProperties roomProperties;
 
-        public DungeonRoom(Vector2 position, Transform rootTransform, GameObject prefab)
+        public DungeonRoom(Vector2 position, Vector2 direction, Transform rootTransform, GameObject prefab, DungeonRoom connection)
         {
-            this.position = position;
-            gameObject = Instantiate(prefab, position, Quaternion.identity, rootTransform);
+            roomProperties = prefab.GetComponent<RoomProperties>();
+
+            this.position = position + (direction * getRequiredOffsetSize(connection));
+            gameObject = Instantiate(prefab, new Vector3(this.position.x, 0, this.position.y), Quaternion.identity, rootTransform);
+            node = new DungeonGraphNode(this);
         }
 
         public void makeConnections(DungeonRoom room)
         {
-            if(this.position.x - room.position.x == 1 && this.position.y == room.position.y)
+            if(this.position.x - room.position.x == getRequiredOffsetSize(room).x && this.position.y == room.position.y)
             {
                 this.leftConnection = room;
                 room.rightConnection = this;
-            } else if (this.position.x - room.position.x == -1 && this.position.y == room.position.y)
+                connectGraph(room);
+            } else if (this.position.x - room.position.x == -getRequiredOffsetSize(room).x && this.position.y == room.position.y)
             {
                 this.rightConnection = room;
                 room.leftConnection = this;
-            } else if (this.position.y - room.position.y == 1 && this.position.x == room.position.x)
+                connectGraph(room);
+            } else if (this.position.y - room.position.y == getRequiredOffsetSize(room).y && this.position.x == room.position.x)
             {
                 this.downConnection = room;
                 room.upConnection = this;
-            } else if (this.position.y - room.position.y == -1 && this.position.x == room.position.x)
+                connectGraph(room);
+            } else if (this.position.y - room.position.y == -getRequiredOffsetSize(room).y && this.position.x == room.position.x)
             {
                 this.upConnection = room;
                 room.downConnection = this;
+                connectGraph(room);
+            }
+        }
+
+        public void connectGraph(DungeonRoom other)
+        {
+            if(!other.node.hasChild(node))
+            {
+                node.appendChild(other.node);
             }
         }
 
@@ -60,17 +134,22 @@ public class DungeonGenerator : MonoBehaviour
                 "Right Connection: " + (rightConnection != null) + "\n" +
                 "}";
         }
+
+        Vector2 getRequiredOffsetSize(DungeonRoom other)
+        {
+            if(other == null) return Vector2.zero;
+            return new Vector2((this.roomProperties.size.x / 2) + (other.roomProperties.size.x / 2), (this.roomProperties.size.y / 2) + (other.roomProperties.size.y / 2));
+        }
     }
 
     public int generationSteps;
     public int generationRounds;
     public DungeonRoom[] rooms = new DungeonRoom[100];
-    public DungeonGraphNode rootDungeonNode = new DungeonGraphNode();
     public GameObject[] roomPrefabs = new GameObject[100];
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rooms[0] = new DungeonRoom(new Vector2(0, 0), transform, roomPrefabs[Random.Range(0, roomPrefabs.Count())]);
+        rooms[0] = new DungeonRoom(new Vector2(0, 0), new Vector2(0, 0), transform, roomPrefabs[Random.Range(0, roomPrefabs.Count())], null);
         for (int y = 0; y < generationRounds; y++)
         {
             bool firstGen = true;
@@ -90,16 +169,37 @@ public class DungeonGenerator : MonoBehaviour
                     }
                 }
 
-                Vector2 position = getRandomDirection();
-                while (!canConnect(currentRoom, position))
+                Vector2 direction = getRandomDirection(currentRoom);
+                while (!canConnect(currentRoom, direction))
                 {
-                    position = getRandomDirection();
+                    direction = getRandomDirection(currentRoom);
+                }
+                GameObject prefab = roomPrefabs[Random.Range(0, roomPrefabs.Count())];
+                RoomProperties prefabProperties = prefab.GetComponent<RoomProperties>();
+                Vector2 offset = new Vector2((currentRoom.roomProperties.size.x / 2) + (prefabProperties.size.x / 2), (currentRoom.roomProperties.size.y / 2) + (prefabProperties.size.y / 2));
+                Vector2 position = currentRoom.position + (direction * offset);
+
+                for (int j = 0; i < rooms.Length; j++) {
+                    if (rooms[j] != null) break;
+                    if(position.x > rooms[j].position.x - ((rooms[j].roomProperties.size.x/2) + 1) && 
+                        position.x < rooms[j].position.x + ((rooms[j].roomProperties.size.x/2) + 1) &&
+                        position.y > rooms[j].position.y - ((rooms[j].roomProperties.size.y/2) + 1) &&
+                        position.y < rooms[j].position.y + ((rooms[j].roomProperties.size.y/2) + 1))
+                    {
+                        for (int k = 0; k < rooms.Length; k++)
+                        {
+                            if (rooms[k] != null && hasOpenConnections(rooms[k]))
+                            {
+                                currentRoom = rooms[k];
+                            }
+                        }
+                    }
                 }
 
 
-                DungeonRoom newRoom = new DungeonRoom(currentRoom.position + position, transform, roomPrefabs[Random.Range(0, roomPrefabs.Count())]);
+                DungeonRoom newRoom = new DungeonRoom(currentRoom.position, direction, transform, prefab, currentRoom);
                 rooms[i + 1] = newRoom;
-                setConnection(currentRoom, newRoom, position);
+                setConnection(currentRoom, newRoom, direction);
                 for (int j = 0; j < rooms.Length; j++)
                 {
                     if (rooms[j] != null)
@@ -110,6 +210,8 @@ public class DungeonGenerator : MonoBehaviour
                 firstGen = false;
             }
         }
+
+        //print(rooms[0].node.findDeepestNode().getRoom());
 
         for (int i = 0; i < generationSteps * generationRounds; i++)
         {
@@ -123,30 +225,30 @@ public class DungeonGenerator : MonoBehaviour
         
     }
 
-    Vector2 getRandomDirection()
+    Vector2 getRandomDirection(DungeonRoom room)
     {
         int rand = UnityEngine.Random.Range(0, 4);
         switch(rand)
         {
             case 0:
-                return new Vector2(1, 0);
+                return new Vector2(room.gameObject.transform.localScale.x, 0);
             case 1:
-                return new Vector2(-1, 0);
+                return new Vector2(-room.gameObject.transform.localScale.x, 0);
             case 2:
-                return new Vector2(0, 1);
+                return new Vector2(0, room.gameObject.transform.localScale.y);
             case 3:
-                return new Vector2(0, -1);
+                return new Vector2(0, -room.gameObject.transform.localScale.y);
             default:
-                return new Vector2(0, 1);
+                return new Vector2(0, room.gameObject.transform.localScale.y);
         }
     }
 
-    bool canConnect(DungeonRoom room,  Vector2 position)
+    bool canConnect(DungeonRoom room, Vector2 direction)
     {
-        if (room.upConnection != null && position.y == 1) return false;
-        if (room.downConnection != null && position.y == -1) return false;
-        if (room.rightConnection != null && position.x == 1) return false;
-        if (room.leftConnection != null && position.x == -1) return false;
+        if (room.upConnection != null && direction.y == 1) return false;
+        if (room.downConnection != null && direction.y == -1) return false;
+        if (room.rightConnection != null && direction.x == 1) return false;
+        if (room.leftConnection != null && direction.x == -1) return false;
         return true;
     }
 
@@ -155,21 +257,21 @@ public class DungeonGenerator : MonoBehaviour
         return !(room.upConnection != null && room.downConnection != null && room.rightConnection != null && room.leftConnection != null);
     }
 
-    void setConnection(DungeonRoom root, DungeonRoom room, Vector2 position)
+    void setConnection(DungeonRoom root, DungeonRoom room, Vector2 direction)
     {
-        if (position.y == 1) {
+        if (direction.y == 1) {
             root.upConnection = room;
             room.downConnection = root;
         }
-        if(position.y == -1) { 
+        if(direction.y == -1) { 
             root.downConnection = room;
             room.upConnection = root;
         }
-        if(position.x == 1) { 
+        if(direction.x == 1) { 
             root.rightConnection = room;
             room.leftConnection = root;
         }
-        if(position.x == -1) { 
+        if(direction.x == -1) { 
             root.leftConnection = room;
             room.rightConnection = root;
         }
