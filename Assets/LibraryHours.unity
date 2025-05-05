@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: main_camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -284,7 +284,7 @@ GameObject:
   - component: {fileID: 410087040}
   - component: {fileID: 410087042}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: directional_light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -436,7 +436,7 @@ GameObject:
   - component: {fileID: 832575519}
   - component: {fileID: 832575518}
   m_Layer: 0
-  m_Name: Global Volume
+  m_Name: global_volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -697,7 +697,7 @@ GameObject:
   - component: {fileID: 1223927529}
   - component: {fileID: 1223927530}
   m_Layer: 0
-  m_Name: Player Capsule
+  m_Name: player_capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -874,7 +874,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1389769250}
   m_Layer: 0
-  m_Name: shooting offset
+  m_Name: shooting_offset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -910,7 +910,7 @@ GameObject:
   - component: {fileID: 1698881536}
   - component: {fileID: 1698881537}
   m_Layer: 0
-  m_Name: enemy capsule
+  m_Name: enemy_capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1021,7 +1021,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1223927523}
-  stopDistance: 10
+  stopDistance: 4
   strafeDistance: 5
   shootCooldown: 2.5
   strafeSpeed: 3
@@ -1059,7 +1059,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1910838158}
   m_Layer: 0
-  m_Name: shooting_offset
+  m_Name: enemy_basic_shooting_offset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
