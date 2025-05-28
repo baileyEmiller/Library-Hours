@@ -2,5 +2,5 @@ using UnityEngine;
 
 public class RoomProperties : MonoBehaviour
 {
-    public Vector2 size;
+    public Vector3 size;
 }

@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 821098909}
-  - component: {fileID: 821098908}
+  - component: {fileID: 821098910}
   m_Layer: 0
   m_Name: DungeonBase
   m_TagString: Untagged
@@ -136,23 +136,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &821098908
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 821098907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e2dccc8d57cd1543a5d239d69e59e77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generationSteps: 10
-  generationRounds: 1
-  roomPrefabs:
-  - {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
-  - {fileID: 183350967663330223, guid: dec49295de6239e42854349d303c2d18, type: 3}
 --- !u!4 &821098909
 Transform:
   m_ObjectHideFlags: 0
@@ -168,6 +151,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &821098910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821098907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a28bf4ebd28e842b38cbfaa829b436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ranks:
+  - rooms:
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
+      inWorldObject: {fileID: 0}
+  - rooms:
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
+      inWorldObject: {fileID: 0}
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
+      inWorldObject: {fileID: 0}
+  - rooms:
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
+      inWorldObject: {fileID: 0}
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
+      inWorldObject: {fileID: 0}
+  - rooms:
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
+      inWorldObject: {fileID: 0}
+    - location: {x: 0, y: 0, z: 0}
+      doors: []
+      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
+      inWorldObject: {fileID: 0}
+  location: {x: 0, y: 0, z: 0}
 --- !u!1 &1198505929
 GameObject:
   m_ObjectHideFlags: 0

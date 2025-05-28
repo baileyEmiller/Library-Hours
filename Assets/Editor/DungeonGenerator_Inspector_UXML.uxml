@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Label text="Edit Dungeon Generation Behavior" data-source-type="DungeonGenerator, Assembly-CSharp" />
+    <ui:Vector3Field label="Location" binding-path="location" style="height: 20px; width: 306px;" />
+</ui:UXML>
