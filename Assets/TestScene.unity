@@ -163,40 +163,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a28bf4ebd28e842b38cbfaa829b436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ranks:
-  - rooms:
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
-      inWorldObject: {fileID: 0}
-  - rooms:
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
-      inWorldObject: {fileID: 0}
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
-      inWorldObject: {fileID: 0}
-  - rooms:
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
-      inWorldObject: {fileID: 0}
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
-      inWorldObject: {fileID: 0}
-  - rooms:
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
-      inWorldObject: {fileID: 0}
-    - location: {x: 0, y: 0, z: 0}
-      doors: []
-      prefab: {fileID: 7434875843554213978, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
-      inWorldObject: {fileID: 0}
-  location: {x: 0, y: 0, z: 0}
+  targetRoomCount: 50
+  gridCellSize: 10
+  roomTemplates:
+  - {fileID: 4279810351986269700, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
+  - {fileID: 4279810351986269700, guid: 5992ff7089ada494691115635b3ee96f, type: 3}
+  - {fileID: -4216825065937861797, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
+  depthPlacementRules: []
 --- !u!1 &1198505929
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4356349357303462653}
+  - component: {fileID: 1436548175056378249}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -31,6 +32,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1958903674940143195}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1436548175056378249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2735957266253336604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eaa5d3182010cf40b90ac76a7091392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: 3
+  isConnected: 0
+  offset: {x: 1, y: 0}
 --- !u!1 &7434875843554213978
 GameObject:
   m_ObjectHideFlags: 0
@@ -40,9 +56,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1958903674940143195}
-  - component: {fileID: -4216825065937861797}
+  - component: {fileID: 4279810351986269700}
   m_Layer: 0
-  m_Name: Hallway
+  m_Name: Entrance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +73,7 @@ Transform:
   m_GameObject: {fileID: 7434875843554213978}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -65,7 +81,7 @@ Transform:
   - {fileID: 5653608676764041807}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4216825065937861797
+--- !u!114 &4279810351986269700
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,7 +93,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ab2ec335555d14fb16f0af81f30cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {x: 10, y: 0, z: 10}
+  type: 0
+  roomSize: {x: 1, y: 1}
+  doorways:
+  - {fileID: 1436548175056378249}
+  minDepth: 0
+  maxDepth: 0
+  weight: 1
+  exclusionTags: []
 --- !u!1 &9063152205127385244
 GameObject:
   m_ObjectHideFlags: 0
