@@ -2,13 +2,13 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyNavigation : MonoBehaviour
 {
     public Transform player;
     public float stopDistance = 4f;
     public float strafeDistance = 5f;
     public float shootCooldown = 2.5f;
-    public float strafeSpeed = 3f;
+    public float speed = 3f;
     public GameObject projectilePrefab;
     public Transform shootPoint;
 
@@ -36,7 +36,8 @@ public class EnemyAI : MonoBehaviour
 
         if (distanceToPlayer > stopDistance)
         {
-            // run toward player until  stop distance
+            // run toward player until stop distance
+            agent.speed = speed;
             agent.isStopped = false;
             agent.SetDestination(player.position);
         }
@@ -56,7 +57,7 @@ public class EnemyAI : MonoBehaviour
             }
 
             movementDirection.Normalize();
-            agent.Move(movementDirection * strafeSpeed * Time.deltaTime);
+            agent.Move(movementDirection * speed * Time.deltaTime);
         }
 
         shootTimer -= Time.deltaTime;
@@ -77,7 +78,7 @@ public class EnemyAI : MonoBehaviour
             if (rb != null)
             {
                 Vector3 direction = (player.position - shootPoint.position).normalized;
-                rb.velocity = direction * 20f;
+                rb.linearVelocity = direction * 20f;
             }
         }
     }
