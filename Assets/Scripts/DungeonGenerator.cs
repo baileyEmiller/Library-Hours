@@ -102,7 +102,6 @@ public class DungeonGenerator : MonoBehaviour
         generatedRooms = new List<RoomNode>();
         grid = new Dictionary<Vector2Int, RoomNode>();
         frontier = new Queue<RoomNode>();
-        Destroy(root.gameObject);
     }
 
     private void PlaceNode(RoomNode roomNode)
