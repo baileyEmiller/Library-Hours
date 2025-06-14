@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -209,6 +210,7 @@ public class DungeonGenerator : MonoBehaviour
         foreach (RoomNode node in generatedRooms)
         {
             GameObject roomObject = Instantiate(node.roomProperties.gameObject, new Vector3(node.gridOrigin.x * gridCellSize, 0, node.gridOrigin.y * gridCellSize), Quaternion.identity, root);
+            roomObject.GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
         }
     }
 
@@ -217,13 +219,13 @@ public class DungeonGenerator : MonoBehaviour
         switch(doorway.direction)
         {
             case DoorDirection.North:
-                return roomNode.gridOrigin + new Vector2Int(0, -1);
+                return roomNode.gridOrigin + new Vector2Int(0, -roomNode.roomProperties.roomSize.y);
             case DoorDirection.East:
-                return roomNode.gridOrigin + new Vector2Int(-1, 0);
+                return roomNode.gridOrigin + new Vector2Int(-roomNode.roomProperties.roomSize.x, 0);
             case DoorDirection.South:
-                return roomNode.gridOrigin + new Vector2Int(0, 1);
+                return roomNode.gridOrigin + new Vector2Int(0, roomNode.roomProperties.roomSize.y);
             case DoorDirection.West:
-                return roomNode.gridOrigin + new Vector2Int(1, 0);
+                return roomNode.gridOrigin + new Vector2Int(roomNode.roomProperties.roomSize.x, 0);
             default:
                 return roomNode.gridOrigin;
         }
