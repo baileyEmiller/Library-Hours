@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyNavigation : MonoBehaviour
+public class baseEnemyNavigation : MonoBehaviour
 {
     public Transform player;
     public float stopDistance = 4f;
