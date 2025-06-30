@@ -20,7 +20,8 @@ public class baseEnemyNavigation : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         shootTimer = shootCooldown;
-        ChooseStrafeDirection();
+        BehaviorAfterShot();
+        player = GameObject.Find("player_capsule").transform;
     }
 
     void Update()
@@ -36,28 +37,11 @@ public class baseEnemyNavigation : MonoBehaviour
 
         if (distanceToPlayer > stopDistance)
         {
-            // run toward player until stop distance
-            agent.speed = speed;
-            agent.isStopped = false;
-            agent.SetDestination(player.position);
+            ApproachPlayer();
         }
         else
         {
-            // strafe and maintain distance
-            agent.isStopped = true;
-
-            Vector3 toPlayer = (transform.position - player.position).normalized;
-            Vector3 strafeDir = Quaternion.Euler(0, 90, 0) * toPlayer * (strafeDirection.x > 0 ? 1 : -1);
-
-            // Combine strafe with backup if too close
-            Vector3 movementDirection = strafeDir;
-            if (distanceToPlayer < stopDistance - 1f)
-            {
-                movementDirection += toPlayer;
-            }
-
-            movementDirection.Normalize();
-            agent.Move(movementDirection * speed * Time.deltaTime);
+            BehaviorAfterApproach(distanceToPlayer);   
         }
 
         shootTimer -= Time.deltaTime;
@@ -65,25 +49,58 @@ public class baseEnemyNavigation : MonoBehaviour
         {
             ShootAtPlayer();
             shootTimer = shootCooldown;
-            ChooseStrafeDirection();
+            BehaviorAfterShot();
         }
     }
 
-    void ShootAtPlayer()
+    public virtual void ApproachPlayer()
+    {
+        // run toward player until stop distance
+        agent.speed = speed;
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
+    }
+
+    public virtual void BehaviorAfterApproach(float distanceToPlayer)
+    {
+        // strafe and maintain distance
+        agent.isStopped = true;
+
+        Vector3 toPlayer = (transform.position - player.position).normalized;
+        Vector3 strafeDir = Quaternion.Euler(0, 90, 0) * toPlayer * (strafeDirection.x > 0 ? 1 : -1);
+
+        // Combine strafe with backup if too close
+        Vector3 movementDirection = strafeDir;
+        if (distanceToPlayer < stopDistance - 1f)
+        {
+            movementDirection += toPlayer;
+        }
+
+        movementDirection.Normalize();
+        agent.Move(movementDirection * speed * Time.deltaTime);
+    }
+
+    public virtual void ShootAtPlayer()
     {
         if (projectilePrefab != null && shootPoint != null)
         {
-            GameObject projectile = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation);
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                Vector3 direction = (player.position - shootPoint.position).normalized;
-                rb.linearVelocity = direction * 20f;
-            }
+            FireWeapon();
         }
     }
 
-    void ChooseStrafeDirection()
+    public virtual void FireWeapon()
+    {
+        GameObject projectile = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation);
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            Vector3 direction = (player.position - shootPoint.position).normalized;
+            rb.linearVelocity = direction * 20f;
+        }
+        Destroy(projectile, 5f);
+    }
+
+    public virtual void BehaviorAfterShot()
     {
         strafeDirection = Random.value < 0.5f ? Vector3.left : Vector3.right;
     }
