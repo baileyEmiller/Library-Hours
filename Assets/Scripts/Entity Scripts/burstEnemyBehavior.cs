@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class burstEnemyNavigation : baseEnemyNavigation
+public class burstEnemyBehavior : baseEnemyBehavior
 {
     public float TimeBetweenBurst = .2f;
     IEnumerator BurstFire()
