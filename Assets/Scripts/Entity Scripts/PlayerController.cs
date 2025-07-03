@@ -1,5 +1,6 @@
 //Bailey Miller, 4/17/25
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,13 +10,15 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform shootPoint;
     private Rigidbody rb;
-    public float dodgeForce = 75f;
+    public float dodgeDistance = 75f;
     public float dodgeDuration = 0.2f;
     public float dodgeCooldown = 2f;
     public bool isDodging = false;
     private float dodgeTimer = 0f;
     private float dodgeCooldownTimer = 0f;
-    private Vector3 dodgeDirection;
+    private float dodgeElapsedTime = 0f;
+    private Vector3 dodgeLocation;
+    private Vector3 startDodgeLocation;
 
     void Start()
     {
@@ -30,9 +33,10 @@ public class PlayerController : MonoBehaviour
         float moveZ = Input.GetAxisRaw("Vertical");
         Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
 
-        if (moveDirection.magnitude >= 0.1f)
+        if (moveDirection.magnitude >= 0.1f && !isDodging)
         {
-            rb.MovePosition(transform.position + moveDirection * moveSpeed * Time.deltaTime);
+            //rb.MovePosition(Vector3.Lerp(transform.position, transform.position + (moveDirection * moveSpeed), Time.deltaTime));
+            transform.position = Vector3.Lerp(transform.position, transform.position + (moveDirection * moveSpeed), Time.deltaTime);
         }
 
         RotateCharacterToMouse();
@@ -52,7 +56,22 @@ public class PlayerController : MonoBehaviour
 
         if (isDodging)
         {
-            rb.MovePosition(transform.position + dodgeDirection * dodgeForce * Time.deltaTime);
+            dodgeElapsedTime += Time.deltaTime;
+           if(dodgeLocation == Vector3.zero)
+            {
+                startDodgeLocation = transform.position;
+                dodgeLocation = transform.position + (moveDirection * dodgeDistance);
+                Debug.DrawLine(transform.position, dodgeLocation, Color.red, 0.1f);
+                Ray ray = new Ray(transform.position, dodgeLocation - transform.position);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, dodgeDistance, LayerMask.GetMask("Default")))
+                {
+                    Debug.DrawLine(transform.position, hit.point, Color.green, 0.1f);
+                    dodgeLocation = hit.point - moveDirection;
+                }
+            }
+            float lerpFactor = Mathf.Clamp01(dodgeElapsedTime / dodgeDuration);
+            transform.position = Vector3.Lerp(startDodgeLocation, dodgeLocation, lerpFactor);
             dodgeTimer -= Time.deltaTime;
 
             if (dodgeTimer <= 0f)
@@ -72,7 +91,8 @@ public class PlayerController : MonoBehaviour
     {
         isDodging = true;
         dodgeTimer = dodgeDuration;
-        dodgeDirection = direction;
+        dodgeLocation = Vector3.zero;
+        dodgeElapsedTime = 0f;
     }
 
     private void RotateCharacterToMouse()

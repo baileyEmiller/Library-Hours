@@ -207,11 +207,13 @@ public class DungeonGenerator : MonoBehaviour
 
     private void InstantiateRooms()
     {
+        List<GameObject> instantiatedRooms = new List<GameObject>();
         foreach (RoomNode node in generatedRooms)
         {
             GameObject roomObject = Instantiate(node.roomProperties.gameObject, new Vector3(node.gridOrigin.x * gridCellSize, 0, node.gridOrigin.y * gridCellSize), Quaternion.identity, root);
-            roomObject.GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
+            instantiatedRooms.Add(roomObject);
         }
+        instantiatedRooms[0].GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
     }
 
     private Vector2Int CalculateRoomOriginFromDoorway(RoomNode roomNode, Doorway doorway)
