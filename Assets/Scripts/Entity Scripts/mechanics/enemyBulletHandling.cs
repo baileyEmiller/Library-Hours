@@ -7,14 +7,21 @@ public class EnemyBulletHandling : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+            return;
+        }
+
         if (collision.gameObject.CompareTag("Player"))
         {
             Health targetHealth = collision.gameObject.GetComponent<Health>();
-            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+            PlayerControllerScript pcs = collision.gameObject.GetComponent<PlayerControllerScript>();
 
             if (targetHealth != null &&
                 !hasDamaged &&
-                (playerController == null || playerController.isDodging == false))
+                pcs != null &&
+                pcs.isDodging == false)
             {
 
                 targetHealth.health -= 1;
