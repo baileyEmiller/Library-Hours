@@ -2,7 +2,7 @@ using DG.Tweening;
 using TMPro.EditorUtilities;
 using UnityEngine;
 
-public enum DoorDirection { North, South, East, West }
+public enum DoorDirection { PosX, NegX, PosZ, NegZ }
 
 public class Doorway : MonoBehaviour
 {

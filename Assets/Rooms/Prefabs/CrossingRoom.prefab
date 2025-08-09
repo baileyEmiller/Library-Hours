@@ -202,8 +202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eaa5d3182010cf40b90ac76a7091392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 2
-  isConnected: 1
+  direction: 1
+  isConnected: 0
   offset: {x: -1, y: 0}
 --- !u!65 &6189453388308416536
 BoxCollider:
@@ -341,8 +341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eaa5d3182010cf40b90ac76a7091392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 3
-  isConnected: 1
+  direction: 0
+  isConnected: 0
   offset: {x: 1, y: 0}
 --- !u!65 &4006399992096647297
 BoxCollider:
@@ -410,9 +410,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eaa5d3182010cf40b90ac76a7091392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 1
-  isConnected: 1
-  offset: {x: 0, y: -1}
+  direction: 2
+  isConnected: 0
+  offset: {x: 0, y: 1}
 --- !u!65 &2365389601992595083
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -549,9 +549,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eaa5d3182010cf40b90ac76a7091392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 0
-  isConnected: 1
-  offset: {x: 0, y: 1}
+  direction: 3
+  isConnected: 0
+  offset: {x: 0, y: -1}
 --- !u!65 &2136763516203422294
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -914,10 +914,10 @@ MonoBehaviour:
   type: 1
   roomSize: {x: 1, y: 1}
   doorways:
-  - {fileID: 8485776852522227931}
-  - {fileID: 66909832460432563}
   - {fileID: 1755749221964759068}
   - {fileID: 3477474291774588794}
+  - {fileID: 66909832460432563}
+  - {fileID: 8485776852522227931}
   minDepth: 0
   maxDepth: 9999
   weight: 0.5
