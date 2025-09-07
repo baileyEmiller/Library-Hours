@@ -16,6 +16,8 @@ public class PlayerControllerScript : MonoBehaviour
     public float dodgeCooldown = 2f;
     public bool isDodging = false;
 
+    public Vector3 exportVector;
+
     //calculation variables
     private Rigidbody rb;
     private Vector3 moveDirection;
@@ -138,7 +140,7 @@ public class PlayerControllerScript : MonoBehaviour
             Vector3 targetPoint = ray.GetPoint(hitDist);
             Vector3 lookDir = (targetPoint - transform.position);
             lookDir.y = 0;
-
+            exportVector = lookDir;
             if (lookDir.sqrMagnitude > 0.001f)
             {
                 targetRot = Quaternion.LookRotation(lookDir);
@@ -150,7 +152,7 @@ public class PlayerControllerScript : MonoBehaviour
     //do rotate
     private void RotateCharacterToMouse()
     {
-        rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
+        rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime)); //err rotation quaternions must be unit length (still works?)
     }
 
 
