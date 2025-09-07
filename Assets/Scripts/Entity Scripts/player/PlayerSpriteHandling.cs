@@ -1,62 +1,57 @@
-using UnityEditor;
 using UnityEngine;
 
 public class PlayerSpriteHandling : MonoBehaviour
 {
-    [Tooltip("Reference to the player's transform (typically the capsule parent)")]
-    public Transform playerTransform;
-
-    [Tooltip("Animator on the hat GameObject")]
     public Animator animator;
-
-    [Tooltip("Movement speed threshold below which the player is considered idle")]
-    public float idleThreshold = 0.1f;
-
-    private Rigidbody playerRb;
-
-    void Start()
+    public Transform playerCapsule;
+    private PlayerControllerScript pcs;
+     void Start()
     {
-        if (playerTransform == null)
-            playerTransform = transform.parent;
-
-        playerRb = playerTransform.GetComponent<Rigidbody>();
-
-        if (animator == null)
-            animator = GetComponent<Animator>();
+        pcs = playerCapsule.GetComponent<PlayerControllerScript>();
     }
-
     void Update()
     {
-        // 1. Determine if the player is moving
-        float speed = playerRb.linearVelocity.magnitude;
-        bool isMoving = speed > idleThreshold;
-        animator.SetBool("IsMoving", isMoving);
+        Vector3 forward = pcs.exportVector;
 
-        // 2. Determine direction the player is facing
-        Vector3 forward = playerTransform.forward;
-        forward.y = 0f;
-        forward.Normalize();
-
-        float angle = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
-        if (angle < 0f) angle += 360f;
-
-        int directionIndex;
-
-        if (angle >= 45f && angle < 135f)
-            directionIndex = 1; // East
-        else if (angle >= 135f && angle < 225f)
-            directionIndex = 2; // South
-        else if (angle >= 225f && angle < 315f)
-            directionIndex = 3; // West
-        else
-            directionIndex = 0; // North
-
-        animator.SetInteger("Direction", directionIndex);
+        int dir = GetDirectionIndex(forward);
+        animator.SetInteger("direction", dir);
+        animator.SetBool("isWalking", IsPlayerMoving());
+        animator.SetBool("isShooting", IsPlayerShooting());
+        animator.SetBool("isDodging", IsPlayerDodging());
+        transform.position = playerCapsule.position;
     }
 
-    void LateUpdate()
+    int GetDirectionIndex(Vector3 dir)
     {
-        // Invert the parent's rotation to cancel it out
-        transform.rotation = Quaternion.identity;
+        // Project to XZ plane (ignore vertical axis)
+        Vector3 flatDir = new Vector3(dir.x, 0f, dir.z).normalized;
+
+        // Calculate angle in degrees relative to +X axis
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        angle = (angle + 360f + 90f) % 360f; // Normalize to 0–360 (90 added bc the player sprite gets rotated 90 degrees on play)
+
+        if (angle >= 45f && angle < 135f)
+            return 0; // Up
+        else if (angle >= 135f && angle < 225f)
+            return 1; // Right
+        else if (angle >= 225f && angle < 315f)
+            return 2; // Down
+        else
+            return 3; // Left
+    }
+
+    bool IsPlayerMoving()
+    {
+        return Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0; //only checks player input
+    }
+
+    bool IsPlayerShooting()
+    {
+        return Input.GetMouseButton(0); //only returns player click
+    }
+
+    bool IsPlayerDodging()
+    {
+        return pcs.isDodging;
     }
 }

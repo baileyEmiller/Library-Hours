@@ -514,9 +514,37 @@ PrefabInstance:
       propertyPath: healthText
       value: 
       objectReference: {fileID: 1495658594}
+    - target: {fileID: 1245883561187141722, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1515971821247265679, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515971821247265679, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515971821247265679, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515971821247265679, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515971821247265679, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515971821247265679, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1904895956833171977, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3788646840368131529, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
       propertyPath: m_Name
@@ -857,9 +885,9 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1904895956833171977, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
   m_PrefabInstance: {fileID: 1073731986}
   m_PrefabAsset: {fileID: 0}
---- !u!212 &1738754965 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 44572151786419722, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+--- !u!95 &1738754964 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1245883561187141722, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
   m_PrefabInstance: {fileID: 1073731986}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1738754966
@@ -874,11 +902,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5744243bf4d9a1741958c48efd5b87e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 1738754965}
-  spriteNorth: {fileID: 0}
-  spriteEast: {fileID: 0}
-  spriteSouth: {fileID: 0}
-  spriteWest: {fileID: 0}
+  animator: {fileID: 1738754964}
+  playerCapsule: {fileID: 1887039549}
+--- !u!4 &1887039549 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2551284504089894829, guid: 6646d51e0188cb144ae6e720572eafe5, type: 3}
+  m_PrefabInstance: {fileID: 1073731986}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5918781462427997009
 PrefabInstance:
   m_ObjectHideFlags: 0
