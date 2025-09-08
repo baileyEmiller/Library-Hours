@@ -168,10 +168,15 @@ MonoBehaviour:
   root: {fileID: 821098909}
   roomTemplates:
   - {fileID: 4279810351986269700, guid: 9c88f3d960b9f564cb58949c5d0482c4, type: 3}
-  - {fileID: -4216825065937861797, guid: 03e8366f2b256ec40826125bf79078eb, type: 3}
-  - {fileID: 4279810351986269700, guid: cf35d7e746b285a498b9ee7c5da59ab3, type: 3}
-  - {fileID: 4279810351986269700, guid: 5992ff7089ada494691115635b3ee96f, type: 3}
+  - {fileID: -4216825065937861797, guid: 5fe8a7b5968ef6e4f9794aa1bfeafaaa, type: 3}
+  - {fileID: -4216825065937861797, guid: f6a4c9696ca963742a18dcd965e79a49, type: 3}
+  - {fileID: -4216825065937861797, guid: 8c76f9a189b037d43b15b43bdb7c51cb, type: 3}
+  - {fileID: -4216825065937861797, guid: 443b5aa35cb588f469e6e8bc505b8ae6, type: 3}
   - {fileID: 4279810351986269700, guid: 2e9c854c39f80a44691e9a0c41cf5a6f, type: 3}
+  - {fileID: -4216825065937861797, guid: dcf59c4604d41bc4e9f4286237cbc2fd, type: 3}
+  - {fileID: -4216825065937861797, guid: 48b26eb7d4f7c5a4488ddde2fbf07fa7, type: 3}
+  - {fileID: -4216825065937861797, guid: e22347829d85c694ca08f50493fd333d, type: 3}
+  - {fileID: -4216825065937861797, guid: cebfefcd355b31142bb5256c274ffc71, type: 3}
   depthPlacementRules: []
 --- !u!1 &1281565004
 GameObject:
@@ -545,12 +550,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dcec00af2486a4fb5b533f3124a2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  rotationSpeed: 7000
   mainCamera: {fileID: 1311403112}
   bulletPrefab: {fileID: 5389607446030096948, guid: d696b5628efefff4d8896b5abccbe5ec, type: 3}
   shootPoint: {fileID: 2051181444}
-  dodgeDistance: 2.5
+  moveSpeed: 5
+  rotationSpeed: 7000
+  dodgeForce: 15
   dodgeDuration: 0.2
   dodgeCooldown: 1
   isDodging: 0

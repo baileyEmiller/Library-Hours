@@ -8,9 +8,13 @@ public class Doorway : MonoBehaviour
 {
     public DoorDirection direction;
     public bool isConnected = false;
-    public Vector2Int offset;
     private GameObject FOW;
     private SpriteRenderer spriteRenderer;
+
+    public Vector2 Offset()
+    {
+        return new Vector2(transform.position.x / 10, transform.position.z / 10);
+    }
 
     private void Start()
     {

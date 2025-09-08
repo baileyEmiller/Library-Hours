@@ -24,7 +24,7 @@ public class DungeonGenerator : MonoBehaviour
     public List<DepthPlacementRule> depthPlacementRules;
 
     private List<RoomNode> generatedRooms = new List<RoomNode>();
-    private Dictionary<Vector2Int, RoomNode> grid = new Dictionary<Vector2Int, RoomNode>();
+    private Dictionary<Vector2, RoomNode> grid = new Dictionary<Vector2, RoomNode>();
     private Queue<RoomNode> frontier = new Queue<RoomNode>();
 
     private void Start()
@@ -45,7 +45,7 @@ public class DungeonGenerator : MonoBehaviour
         RoomNode startNode = new RoomNode
         {
             roomProperties = startRoom,
-            gridOrigin = Vector2Int.zero,
+            gridOrigin = Vector2.zero,
             depth = 0,
             openDoors = new List<Doorway>(startRoom.doorways)
         };
@@ -57,18 +57,19 @@ public class DungeonGenerator : MonoBehaviour
 
             foreach (Doorway doorway in currentRoom.openDoors)
             {
-                Vector2Int potentialNewRoomOrigin = CalculateRoomOriginFromDoorway(currentRoom, doorway);
-                RoomProperties selectedTemplate = SelectRoomTemplate(currentRoom.depth + 1, potentialNewRoomOrigin, doorway);
+                RoomProperties selectedTemplate = SelectRoomTemplate(currentRoom.depth + 1, doorway);
 
                 if (selectedTemplate != null)
                 {
                     RoomNode newRoomNode = new RoomNode
                     {
                         roomProperties = selectedTemplate,
-                        gridOrigin = potentialNewRoomOrigin,
+                        gridOrigin = new Vector2(),
                         depth = currentRoom.depth + 1,
                         openDoors = new List<Doorway>(selectedTemplate.doorways)
                     };
+                    Vector2 potentialNewRoomOrigin = CalculateRoomOriginFromDoorway(newRoomNode, currentRoom, doorway);
+                    newRoomNode.gridOrigin = potentialNewRoomOrigin;
 
                     print($"Placed Room with {selectedTemplate.doorways.FindAll(d => d.isConnected == false).Count()} open doors at depth {newRoomNode.depth} at origin {newRoomNode.gridOrigin}");
 
@@ -110,7 +111,6 @@ public class DungeonGenerator : MonoBehaviour
             {
                 if (!door.isConnected)
                 {
-                    var potentialOrigin = CalculateRoomOriginFromDoorway(node, door);
                     var candidates = roomTemplates.FindAll(r => r.type == RoomType.Boss);
                     if (candidates != null && candidates.Count > 0)
                     {
@@ -118,10 +118,12 @@ public class DungeonGenerator : MonoBehaviour
                         RoomNode newRoomNode = new RoomNode
                         {
                             roomProperties = selectedTemplate,
-                            gridOrigin = potentialOrigin,
+                            gridOrigin = new Vector2(0, 0),
                             depth = node.depth + 1,
-                            openDoors = new List<Doorway>(selectedTemplate.doorways)
+                            openDoors = new List<Doorway>(selectedTemplate.doorways)    
                         };
+                        var potentialOrigin = CalculateRoomOriginFromDoorway(newRoomNode, node, door);
+                        newRoomNode.gridOrigin = potentialOrigin;
 
                         if (CanPlaceRoomNode(newRoomNode, door))
                         {
@@ -145,7 +147,7 @@ public class DungeonGenerator : MonoBehaviour
     private void ResetDungeon()
     {
         generatedRooms = new List<RoomNode>();
-        grid = new Dictionary<Vector2Int, RoomNode>();
+        grid = new Dictionary<Vector2, RoomNode>();
         frontier = new Queue<RoomNode>();
     }
 
@@ -156,7 +158,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             for (int y = 0; y < roomNode.roomProperties.roomSize.y; y++)
             {
-                grid[roomNode.gridOrigin + new Vector2Int(x, y)] = roomNode;
+                grid[roomNode.gridOrigin + new Vector2(x, y)] = roomNode;
             }
         }
     }
@@ -167,7 +169,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             for (int y = 0; y < node.roomProperties.roomSize.y; y++)
             {
-                if (grid.ContainsKey(node.gridOrigin + new Vector2Int(x, y)))
+                if (grid.ContainsKey(node.gridOrigin + new Vector2(x, y)))
                 {
                     return false;
                 }
@@ -187,7 +189,7 @@ public class DungeonGenerator : MonoBehaviour
         return hasDoorInThisDirection;
     }
 
-    private RoomProperties SelectRoomTemplate(int currentDepth, Vector2Int potentialOrigin, Doorway doorway)
+    private RoomProperties SelectRoomTemplate(int currentDepth, Doorway doorway)
     {
         List<RoomProperties> candidates = new List<RoomProperties>();
 
@@ -259,20 +261,61 @@ public class DungeonGenerator : MonoBehaviour
         instantiatedRooms[0].GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
     }
 
-    private Vector2Int CalculateRoomOriginFromDoorway(RoomNode roomNode, Doorway doorway)
+    private Vector2 CalculateRoomOriginFromDoorway(RoomNode toNode, RoomNode fromNode, Doorway doorway)
     {
-        switch(doorway.direction)
+        // Find the corresponding doorway in the new room
+        DoorDirection oppositeDirection = GetOppositeDirection(doorway.direction);
+        Doorway toDoorway = toNode.openDoors.Find(d => d.direction == oppositeDirection);
+        
+        if (toDoorway == null)
+        {
+            Debug.LogError($"No matching doorway found in new room for direction {oppositeDirection}");
+            return fromNode.gridOrigin;
+        }
+
+        // Calculate the doorway position in the fromNode
+        Vector2 fromDoorwayPos = fromNode.gridOrigin + doorway.Offset();
+        
+        Debug.Log($"FromNode origin: {fromNode.gridOrigin}, doorway offset: {doorway.Offset()}, doorway world pos: {fromDoorwayPos}");
+        Debug.Log($"ToNode doorway offset: {toDoorway.Offset()}");
+
+        switch (doorway.direction)
         {
             case DoorDirection.PosX:
-                return roomNode.gridOrigin + new Vector2Int(roomNode.roomProperties.roomSize.x, 0);
+                // Place new room to the right of the fromNode
+                // The new room's doorway should align with the fromNode's doorway
+                Vector2 posXOrigin = fromDoorwayPos - toDoorway.Offset();
+                Debug.Log($"PosX: From doorway pos {fromDoorwayPos} - to doorway offset {toDoorway.Offset()} = {posXOrigin}");
+                return posXOrigin;
             case DoorDirection.NegX:
-                return roomNode.gridOrigin + new Vector2Int(-roomNode.roomProperties.roomSize.x, 0);
+                // Place new room to the left of the fromNode
+                Vector2 negXOrigin = fromDoorwayPos - toDoorway.Offset();
+                Debug.Log($"NegX: From doorway pos {fromDoorwayPos} - to doorway offset {toDoorway.Offset()} = {negXOrigin}");
+                return negXOrigin;
             case DoorDirection.PosZ:
-                return roomNode.gridOrigin + new Vector2Int(0, roomNode.roomProperties.roomSize.y);
+                // Place new room above the fromNode
+                Vector2 posZOrigin = fromDoorwayPos - toDoorway.Offset();
+                Debug.Log($"PosZ: From doorway pos {fromDoorwayPos} - to doorway offset {toDoorway.Offset()} = {posZOrigin}");
+                return posZOrigin;
             case DoorDirection.NegZ:
-                return roomNode.gridOrigin + new Vector2Int(0, -roomNode.roomProperties.roomSize.y);
+                // Place new room below the fromNode
+                Vector2 negZOrigin = fromDoorwayPos - toDoorway.Offset();
+                Debug.Log($"NegZ: From doorway pos {fromDoorwayPos} - to doorway offset {toDoorway.Offset()} = {negZOrigin}");
+                return negZOrigin;
             default:
-                return roomNode.gridOrigin;
+                return fromNode.gridOrigin;
+        }
+    }
+
+    private DoorDirection GetOppositeDirection(DoorDirection direction)
+    {
+        switch (direction)
+        {
+            case DoorDirection.PosX: return DoorDirection.NegX;
+            case DoorDirection.NegX: return DoorDirection.PosX;
+            case DoorDirection.PosZ: return DoorDirection.NegZ;
+            case DoorDirection.NegZ: return DoorDirection.PosZ;
+            default: return DoorDirection.PosX;
         }
     }
 }
