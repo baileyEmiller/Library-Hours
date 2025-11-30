@@ -1,5 +1,7 @@
 //Bailey Miller, 4/17/25
+using DG.Tweening;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerControllerScript : MonoBehaviour
 {
@@ -82,7 +84,7 @@ public class PlayerControllerScript : MonoBehaviour
             //movement action
             MovePlayer();
         }
-
+        
         //rotation action
         RotateCharacterToMouse();
     }
@@ -124,7 +126,8 @@ public class PlayerControllerScript : MonoBehaviour
     {
         if (moveDirection.magnitude > 0.1f)
         {
-            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
+            rb.linearVelocity = moveDirection * moveSpeed;
+            rb.angularVelocity = Vector3.zero;
         }
     }
 
@@ -147,7 +150,6 @@ public class PlayerControllerScript : MonoBehaviour
             }
         }
     }
-
 
     //do rotate
     private void RotateCharacterToMouse()

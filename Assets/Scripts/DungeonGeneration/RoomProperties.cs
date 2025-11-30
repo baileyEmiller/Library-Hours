@@ -13,7 +13,7 @@ public class RoomProperties : MonoBehaviour
     }
 
     public RoomType type;
-    public Vector2Int roomSize = new Vector2Int(1, 1);
+    public Vector2 roomSize = new Vector2(1, 1);
     public List<Doorway> doorways;
     public int minDepth = 0;
     public int maxDepth = 0;
